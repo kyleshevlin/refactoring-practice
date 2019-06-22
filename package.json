@@ -1,0 +1,17 @@
+{
+  "name": "refactoring",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "author": "Kyle Shevlin <kyle.a.shevlin@gmail.com> (https://kyleshevlin.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^6.0.0",
+    "eslint-plugin-jest": "^22.7.1",
+    "jest": "^24.8.0"
+  }
+}
