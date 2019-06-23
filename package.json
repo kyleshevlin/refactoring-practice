@@ -9,6 +9,9 @@
   },
   "author": "Kyle Shevlin <kyle.a.shevlin@gmail.com> (https://kyleshevlin.com/)",
   "license": "MIT",
+  "jest": {
+    "verbose": true
+  },
   "devDependencies": {
     "eslint": "^6.0.0",
     "eslint-plugin-jest": "^22.7.1",
