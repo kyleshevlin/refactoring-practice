@@ -40,59 +40,64 @@ function totalVolumeCredits(data) {
 function createPerformanceCalculator(aPerformance, aPlay) {
   switch (aPlay.type) {
     case 'comedy':
-      return new ComedyCalculator(aPerformance, aPlay)
+      return comedyCalculatorFactory(aPerformance, aPlay)
 
     case 'tragedy':
-      return new TragedyCalculator(aPerformance, aPlay)
+      return tragedyCalculatorFactory(aPerformance, aPlay)
 
     default:
       throw new Error(`Unknown type: ${aPlay.type}`)
   }
 }
 
-class PerformanceCalculator {
-  constructor(aPerformance, aPlay) {
-    this.performance = aPerformance
-    this.play = aPlay
-  }
-
-  get amount() {
-    throw new Error('Subclass must implement amount')
-  }
-
-  get volumeCredits() {
-    return Math.max(this.performance.audience - 30, 0)
-  }
+function calculatorFactory(amountFn, volumeCreditsFn) {
+  return (performance, play) => ({
+    performance,
+    play,
+    get amount() {
+      return amountFn(this.performance.audience)
+    },
+    get volumeCredits() {
+      return volumeCreditsFn(this.performance.audience)
+    }
+  })
 }
 
-class ComedyCalculator extends PerformanceCalculator {
-  get amount() {
-    const { audience } = this.performance
-    let result = 30000
+const comedyCalculatorFactory = calculatorFactory(
+  comedyAmount,
+  comedyVolumeCredits
+)
+const tragedyCalculatorFactory = calculatorFactory(
+  tragedyAmount,
+  standardVolumeCredits
+)
 
-    if (audience > 20) {
-      result += 10000 + 500 * (audience - 20)
-    }
-
-    result += 300 * audience
-
-    return result
-  }
-
-  get volumeCredits() {
-    return super.volumeCredits + Math.floor(this.performance.audience / 5)
-  }
+function standardVolumeCredits(audience) {
+  return Math.max(audience - 30, 0)
 }
 
-class TragedyCalculator extends PerformanceCalculator {
-  get amount() {
-    const { audience } = this.performance
-    let result = 40000
+function comedyAmount(audience) {
+  let result = 30000
 
-    if (audience > 30) {
-      result += 1000 * (audience - 30)
-    }
-
-    return result
+  if (audience > 20) {
+    result += 10000 + 500 * (audience - 20)
   }
+
+  result += 300 * audience
+
+  return result
+}
+
+function comedyVolumeCredits(audience) {
+  return standardVolumeCredits(audience) + Math.floor(audience / 5)
+}
+
+function tragedyAmount(audience) {
+  let result = 40000
+
+  if (audience > 30) {
+    result += 1000 * (audience - 30)
+  }
+
+  return result
 }
